@@ -29,8 +29,8 @@
 
 void ProcessInfo(char *info, processed_rule * p, rule_parser * rp)
 {
-   char port[256];                       // String representation of the port
-   char which[256];                      // Which protocol the port is for
+   char port[1024];                       // String representation of the port
+   char which[1024];                      // Which protocol the port is for
 
    // (tcp, udp, or icmp)
    int port_val;                          // Integer representation of the port 
@@ -43,8 +43,8 @@ void ProcessInfo(char *info, processed_rule * p, rule_parser * rp)
 
    int state;                             // States to match
 
-   char word1[256];                      // Key name
-   char word2[256];                      // Value 
+   char word1[1024];                      // Key name
+   char word2[1024];                      // Value 
 
    int flags[6];                          // Which TCP flags to match
 
@@ -68,19 +68,19 @@ void ProcessInfo(char *info, processed_rule * p, rule_parser * rp)
          info++;
       }
       // Read the first word (the key)
-      if (sscanf(info, "%256s", word1) != EOF) {
+      if (sscanf(info, "%1024s", word1) != EOF) {
          info += strlen(word1);
          // If it's tcp or udp, scan in a port.
-         if (!strncmp(word1, "tcp", 256) || !strncmp(word1, "udp", 256)) {
+         if (!strncmp(word1, "tcp", 1024) || !strncmp(word1, "udp", 1024)) {
             // Read the port number into word2
-            if (sscanf(info, "%256s", word2) != EOF) {
+            if (sscanf(info, "%1024s", word2) != EOF) {
                info += strlen(word2);
                // Convert the string into an integer
                rp->BreakPort(word2, which, port);
                // If it's a destination port, put it in the dports
                // list.  If it's a source port, put it in the sports
                // list.
-               if (!strncmp(which, "dpt", 256)) {
+               if (!strncmp(which, "dpt", 1024)) {
                   newPort = new port_range;
                   newPort->next = dports;
                   port_val = atoi(port);
@@ -88,7 +88,7 @@ void ProcessInfo(char *info, processed_rule * p, rule_parser * rp)
                   newPort->port2 = port_val % 256;
                   dports = newPort;
                }
-               else if (!strncmp(which, "spt", 256)) {
+               else if (!strncmp(which, "spt", 1024)) {
                   newPort = new port_range;
                   newPort->next = sports;
                   port_val = atoi(port);
@@ -100,8 +100,8 @@ void ProcessInfo(char *info, processed_rule * p, rule_parser * rp)
             // If the keyword is "state", then parse the state
             // information.
          }
-         else if (!strncmp(word1, "state", 256)) {
-            if (sscanf(info, "%256s", word2) != EOF) {
+         else if (!strncmp(word1, "state", 1024)) {
+            if (sscanf(info, "%1024s", word2) != EOF) {
                info += strlen(word2);
                rp->BreakState(word2, &state);
             }
@@ -111,7 +111,7 @@ void ProcessInfo(char *info, processed_rule * p, rule_parser * rp)
             rp->BreakFlags(word1, flags);
          }
          else if (!strncmp(word1, "PKTTYPE", 7)) {
-            if (sscanf(info, " %*c %256s", word2) != EOF) {
+            if (sscanf(info, " %*c %1024s", word2) != EOF) {
                info += strlen(word2);
                rp->BreakPktType(word2, pktcond);
             }
@@ -135,8 +135,6 @@ void ProcessRule(rule * r, processed_rule * p, rule_parser * rp,
 {
    p->id = r->id;
    p->chain_id = r->chain_id;
-   p->fw_id = r->fw_id;
-   strncpy(p->text, r->text, 2048);
 
    // Munge the source and destination addresses
    ConvertARange(r->source, p->from);

@@ -30,6 +30,7 @@ Williamsburg, VA 23185
 #define __STRUCTURES_H
 
 #include <stdlib.h>
+#include <stdio.h>
 
 //Linked list of IP addresses
 class address

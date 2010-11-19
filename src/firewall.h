@@ -32,6 +32,10 @@ class Firewall {
    int num_chains;
    int num_nat_chains;
 
+   //Can handle up to 256 seperate chains per firewall.
+   chain *chain_array[256];
+   nat_chain *nat_chains[256];
+
    //Linked lists of processed(netmasks->ranges, strings->values) rules.
    processed_rule *phead;
    processed_nat_rule *natHead;
@@ -103,7 +107,6 @@ class Firewall {
 
  public:
    Topology * T;
-   int id;
    fw_fddl_forest *FWForest;
    fw_fddl_forest *ClassForest;
    fw_fddl_forest *ServiceClassForest;
@@ -117,38 +120,25 @@ class Firewall {
    mdd_handle Forward;
    mdd_handle ForwardHist;
    mdd_handle ForwardLog;
-   
-   //Can handle up to 256 seperate chains per firewall.
-   chain *chain_array[256];
-   nat_chain *nat_chains[256];
-
-   chain*** merged_chains;
 
    int FindChain(char *name);
    int FindNATChain(char *name);
    void NATChains(int input_chain, mdd_handle inMDD, mdd_handle inHistMDD, mdd_handle & outMDD,
                   mdd_handle & logMDD, mdd_handle & outHistMDD);
 
-     Firewall(fw_fddl_forest * F, fw_fddl_forest * H, int id_num);
+     Firewall(fw_fddl_forest * F, fw_fddl_forest * H);
 
      Firewall(char *filterName, char *natName, fw_fddl_forest * F,
-              Topology * top, fw_fddl_forest * H, int id_num);
+              Topology * top, fw_fddl_forest * H);
      Firewall(char *filterName, char *natName, fw_fddl_forest * F,
-              Topology * top, int verbose, fw_fddl_forest * H, int id_num);
+              Topology * top, int verbose, fw_fddl_forest * H);
 
    ~Firewall();
-   int PrintClasses(int history);
-   int PrintClassHistory(mdd_handle classMDD, int numClasses);
-   int PrintServiceClassHistory(mdd_handle classMDD, int numClasses);
-   int PrintServiceClasses(int history);
+   int PrintClasses();
+   int PrintServiceClasses();
    int GetClasses(group ** &Classes, int &numClasses);
    int GetServiceClasses(service ** &Classes, int &numClasses);
    int GetServiceGraph(int* src, int* dst, service* &arcs, int& numArcs);
-   int DisplayRule(int fw_id, int chain_id, int rule_id);
-   chain* FindChain(int fw_id, int cid);
-
-   void FindProblemClasses(mdd_handle conditionHistory);
-   void ProblemClassesInChain(mdd_handle resultMDD, mdd_handle conditionHistory);
 };
 
 /* Create a META-Firewall from all the independent firewalls.*/

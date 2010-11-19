@@ -27,8 +27,7 @@ char *Topology::LookupInterface(int idx)
 {
    if (idx < numIfaces)
       return ifaces[idx]->name;
-   return "any";
-//   return NULL;
+   return NULL;
 }
 
 int Topology::AddAnonymousInterface(char *name)
@@ -46,13 +45,19 @@ int Topology::AddAnonymousInterface(char *name)
 
 void Topology::PrintMapping()
 {
-   printf("# ----------------------------------------------------\n");
-   printf("# TOPOLOGY\n");
+   cout << "# ----------------------------------------------------" << endl;
+   cout << "# TOPOLOGY" << endl;
    for (int i = 0; i < numIfaces; i++) {
-      printf("# %s %d.%d.%d.%d\n", ifaces[i]->name, ifaces[i]->ip[0],
-             ifaces[i]->ip[1], ifaces[i]->ip[2], ifaces[i]->ip[3]);
+      cout << "# " << ifaces[i]->name << " ";
+      for (int j=0; j<4; j++){
+	cout << ifaces[i]->ip[j];
+	if (j<3)
+		cout << ".";
+	else
+		cout << endl;
+      }
    }
-   printf("# ----------------------------------------------------\n");
+   cout << "# ----------------------------------------------------" << endl;
 }
 
 int* Topology::GetIP(char * name){

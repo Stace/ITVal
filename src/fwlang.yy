@@ -103,22 +103,19 @@ addy_list: addy_list addr {$$ = AppendAddy($1,$2);}
 port_list: port_list complete_port {$$ = AppendPort($1, $2);}
             | complete_port {$$ = AppendPort(NULL, $1);};
 
-query_expression: QUERY CLASSES {$$ = PrintClasses(FLAG_NO_HISTORY);} 
-          | QUERY SCLASSES {$$ = PrintServiceClasses(FLAG_NO_HISTORY);}
-          | QUERY SGRAPH {$$ = PrintServiceGraph(FLAG_HISTORY);}
-	  | QUERY HISTORY CLASSES {$$ = PrintClasses(FLAG_HISTORY);}
-	  | QUERY HISTORY SCLASSES {$$ = PrintServiceClasses(FLAG_HISTORY);}
+query_expression: QUERY CLASSES {$$ = PrintClasses();} 
+          | QUERY SCLASSES {$$ = PrintServiceClasses();}
+          | QUERY SGRAPH {$$ = PrintServiceGraph();}
           | QUERY subject condition {$$ = PerformQuery($2, $3);}
 //          | QUERY subject condition {$$ = PerformQuery($2, $3, 1);}
 //          | QUERY subject input_chain condition {$$ = PerformQuery($2, $4, $3);} 
 //          | QUERY input_chain subject condition {$$ = PerformQuery($3, $4, $2);}
 ;
 
-assert_expression: ASSERT condition assert_op condition {$$ = PerformAssertion($2, $4, $3, FLAG_NO_EXAMPLE, FLAG_NO_HISTORY);}
-	| ASSERT EXAMPLE condition assert_op condition {$$ = PerformAssertion($3, $5, $4, FLAG_EXAMPLE, FLAG_NO_HISTORY);}
-	| ASSERT HISTORY condition assert_op condition {$$ = PerformAssertion($3, $5, $4, FLAG_NO_EXAMPLE, FLAG_HISTORY);}
-	| ASSERT EXAMPLE HISTORY condition assert_op condition {$$ = PerformAssertion($4, $6, $5, FLAG_EXAMPLE, FLAG_HISTORY);}
-	| ASSERT HISTORY EXAMPLE condition assert_op condition {$$ = PerformAssertion($4, $6, $5, FLAG_EXAMPLE, FLAG_HISTORY);}
+assert_expression: ASSERT condition assert_op condition {$$ = PerformAssertion($2, $4, $3, 0, 0);}
+	| ASSERT EXAMPLE condition assert_op condition {$$ = PerformAssertion($3, $5, $4, 1, 0);}
+	| ASSERT HISTORY condition assert_op condition {$$ = PerformAssertion($3, $5, $4, 0, 1);}
+	| ASSERT EXAMPLE HISTORY condition assert_op condition {$$ = PerformAssertion($4, $6, $5, 1,1);}
 		 ;
 
 assert_op: IS {$$ = OP_IS;} 

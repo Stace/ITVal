@@ -146,8 +146,8 @@ void PrintRuleTuple(rule_tuple * r)
 {
    int i;
 
-   printf("Firewall %d, Chain %d, Rule %d --> ", r->fw_id, r->chain_id, r->id);
-   for (i = TOP_LEVEL; i >= 0; i--) {
+   printf("Chain %d, Rule %d --> ", r->chain_id, r->id);
+   for (i = 22; i >= 0; i--) {
       printf("%d-%d ", r->low[i], r->high[i]);
    }
    printf("\n");

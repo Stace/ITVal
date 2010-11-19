@@ -27,22 +27,9 @@
 #include "rules.h"
 #include <stdlib.h>
 
-// Remove whitespace from the end of a line.
-void trim(char* str){
-   int length;
-   length = strlen(str);
-   for (int i=length-1;i>0;i--){
-      if (str[i] != ' ' && str[i] != '\t' && str[i] != '\n' && str[i] != (char)0x0)
-         break;
-      str[i] = char(0x0);
-   }
-}
-
-
 // Parse a TCP or UDP port value from a string into parts.
 // Store the protocol name (tcp or udp) in "which"
 // Store the port list in "port"
-
 void
   rule_parser::BreakPort(char *word, char *which, char *port)
 {
@@ -78,7 +65,7 @@ void
 void rule_parser::BreakState(char *word, int *state)
 {
    // The current word to examine
-   char curword[256];
+   char curword[1024];
 
    // The current character to copy
    char *ch;
@@ -140,8 +127,8 @@ void rule_parser::BreakPktType(char *word, int& pktcond){
 
 void rule_parser::BreakFlags(char *word, int *flags)
 {
-   char word1[256];                      // Flags to examine (Hex string)
-   char word2[256];                      // Flags that must be set to match 
+   char word1[1024];                      // Flags to examine (Hex string)
+   char word2[1024];                      // Flags that must be set to match 
 
    // (Hex string)
 
@@ -224,9 +211,6 @@ int rule_parser::ReadRule(rule * newRule, char *line, size_t length)
 {
    char *ch;
    char *end;
-
-   strncpy(newRule->text, line, 2048);
-   trim(newRule->text);
 
    ch = line;
    end = line + length * sizeof(char);
@@ -313,26 +297,24 @@ int rule_parser::ReadRule(rule * newRule, char *line, size_t length)
 // Read a rule from the rule file.  Store it in a rule struct.
 int rule_parser::ReadVerboseRule(rule * newRule, char *line, size_t length)
 {
-   char target[256];
-   char protocol[256];
-   char opt[256];
-   char in[256];
-   char out[256];
-   char source[256];
-   char destination[256];
-   char info[256];
+   char target[1024];
+   char protocol[1024];
+   char opt[1024];
+   char in[1024];
+   char out[1024];
+   char source[1024];
+   char destination[1024];
+   char info[1024];
    int numcons;
 
-   strncpy(newRule->text, line, 2048);
-   trim(newRule->text);
-   for (int i = 0; i < 256; i++)
+   for (int i = 0; i < 1024; i++)
       info[i] = (char) 0x0;
 
    numcons = 0;
 
    numcons =
       sscanf(line,
-             "%*s %*s %256s %256s %256s %256s %256s %256s %256s %256c",
+             "%*s %*s %1024s %1024s %1024s %1024s %1024s %1024s %1024s %1024c",
              target, protocol, opt, in, out, source, destination, info);
    if (numcons != 8) {
       info[0] = '\0';
@@ -340,25 +322,24 @@ int rule_parser::ReadVerboseRule(rule * newRule, char *line, size_t length)
 
    if (strncmp(protocol, "--", 2) == 0) {
       /* Handle "blank target" case */
-      //These all look wrong, but they're right -- they copy the fields "one left".
-      strncpy(newRule->info, destination, 256);
-      strncpy(newRule->dest, source, 256);
-      strncpy(newRule->source, out, 256);
-      strncpy(newRule->out, in, 256);
-      strncpy(newRule->in, opt, 256);
-      strncpy(newRule->protocol, target, 256); 
+      strncpy(newRule->info, destination, 1024);
+      strncpy(newRule->dest, source, 1024);
+      strncpy(newRule->source, out, 1024);
+      strncpy(newRule->out, in, 1024);
+      strncpy(newRule->in, opt, 1024);
+      strncpy(newRule->protocol, target, 1024);
       newRule->target[0] = '\0';
    }
    else {
       /*Normal Case */
-      strncpy(newRule->info, info, 256);
-      strncpy(newRule->dest, destination, 256);
-      strncpy(newRule->source, source, 256);
-      strncpy(newRule->out, out, 256);
-      strncpy(newRule->in, in, 256);
-      strncpy(newRule->opt, opt, 256);
-      strncpy(newRule->protocol, protocol, 256);
-      strncpy(newRule->target, target, 256);
+      strncpy(newRule->info, info, 1024);
+      strncpy(newRule->dest, destination, 1024);
+      strncpy(newRule->source, source, 1024);
+      strncpy(newRule->out, out, 1024);
+      strncpy(newRule->in, in, 1024);
+      strncpy(newRule->opt, opt, 1024);
+      strncpy(newRule->protocol, protocol, 1024);
+      strncpy(newRule->target, target, 1024);
    }
    return 0;
 }

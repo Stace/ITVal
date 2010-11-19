@@ -39,10 +39,8 @@ Williamsburg, VA 23185
 //have been broken into lists of ranges.
 class processed_rule {
  public:
-   char text[2048];
    int id;
    int chain_id;
-   int fw_id;
    address_range *from;
    address_range *to;
 
@@ -68,7 +66,6 @@ class processed_rule {
       out = -1;
       id = -1;
       chain_id = -1;
-      fw_id = -1;
      } 
      ~processed_rule() {
       port_range *cur;
@@ -92,20 +89,17 @@ class processed_rule {
 //into an MDD.
 class rule_tuple {
  public:
-   int hlow[TOP_LEVEL+1+3];
-   int hhigh[TOP_LEVEL+1+3];
-   int low[TOP_LEVEL+1];
-   int high[TOP_LEVEL+1];
+   int hlow[25];
+   int hhigh[25];
+   int low[23];
+   int high[23];
    int id;
    int chain_id;
-   int fw_id;
-   char text[2048];
    rule_tuple *next;
 
      rule_tuple() {
 	id = -1;
 	chain_id = -1;
-	fw_id = -1;
       next = NULL;
 }};
 

@@ -43,8 +43,8 @@ class nat_range {
    port_range ports;
    nat_range *next;
 
-   int low[TOP_LEVEL+1];
-   int high[TOP_LEVEL+1];
+   int low[23];
+   int high[23];
 
      nat_range() {
       next = NULL;
@@ -58,8 +58,8 @@ class nmap_range {
 
    int mask;
 
-   int low[TOP_LEVEL+1];
-   int high[TOP_LEVEL+1];
+   int low[23];
+   int high[23];
 
      nmap_range() {
       next = NULL;

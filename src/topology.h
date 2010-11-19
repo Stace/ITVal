@@ -1,7 +1,10 @@
 #ifndef TOPOLOGY_H__
 #define TOPOLOGY_H__
-#include <stdio.h>
+#include <iostream>
 #include <string.h>
+#include <stdio.h>
+
+using namespace std;
 
 class Interface {
  public:
@@ -46,8 +49,7 @@ class Topology {
          ifaces[numIfaces] = new Interface(name, ip);
          numIfaces++;
          if (numIfaces > 256) {
-            printf
-               ("Warning: ITVal cannot handle more than 256 interfaces!\n");
+            cout <<  "Warning: ITVal cannot handle more than 256 interfaces!" << endl;
             return;
          }
       }

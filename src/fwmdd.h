@@ -26,6 +26,7 @@ College of William and Mary
 Williamsburg, VA 23185
 */
 
+//#define NO_HISTORY
 
 #ifndef SRC_FWMDD_H
 #   define SRC_FWMDD_H 1
@@ -48,14 +49,6 @@ Williamsburg, VA 23185
  * printing Firewall query results.
  */
 
-class chain_rule{
-   public:
-   int rule_id;
-   int chain_id;
-   int fw_id;
-   chain_rule* next;
-};
-
 class fw_fddl_forest:public fddl_forest {
  private:
    cache **FWCache;        //Cache for all firewall specific operations.
@@ -64,27 +57,23 @@ class fw_fddl_forest:public fddl_forest {
 
     fw_fddl_forest(int numlevels, int *maxvals):fddl_forest(numlevels, maxvals){
 
-      FWCache = new cache *[K + 4];
+      FWCache = new cache *[K + 1];
 
-      for (int k = 0; k <= K+3; k++) {
+      for (int k = 0; k <= K; k++) {
          FWCache[k] = new cache;
       } 
    }
 
    //Clean up data structures used by the forest
    ~fw_fddl_forest() {
-      for (level k = K+3; k >= 0; k--) {
+      for (level k = K; k >= 0; k--) {
          if (FWCache[k])
             delete FWCache[k];
       }
       delete[]FWCache;
    }
 
-   int NumLevels(){ return K; }
-
-   void DisplayElement(mdd_handle p, Topology* T, bool cond);
    int FindElement(mdd_handle p, Topology* T, int*& tup);
-   int FindInternalElement(level k, node_idx p, Topology* T, int*& tup);
    node_idx InternalFindElement(level k, node_idx p, int* vals);
    int PrintElement(Topology* T, int* tup);
 
@@ -102,10 +91,7 @@ class fw_fddl_forest:public fddl_forest {
    int InternalDisplayHistory(level k, node_idx p, int* tup, int chain);
 
    int PrintHistory(mdd_handle p);
-   void InternalPrintHistory(level k, node_idx p, int fw_num, int chain_num, int rule_num);
-
-   chain_rule* GetHistory(mdd_handle p);
-   chain_rule* InternalGetHistory(level k, node_idx p, int fw_num, int chain_num, int rule_num, chain_rule* cur);
+   void InternalPrintHistory(level k, node_idx p, int chain_num, int rule_num);
 
    int DNAT(mdd_handle p, nat_tuple * pnr, mdd_handle & result);
    node_idx InternalDNAT(level k, node_idx p, node_idx q, nat_tuple * pnr);
@@ -116,13 +102,9 @@ class fw_fddl_forest:public fddl_forest {
 
    int BuildClassMDD(mdd_handle p, fddl_forest * forest, mdd_handle & r,
                      int &numClasses, int services);
-
    int InternalBuildClassMDD(fddl_forest * forest, level k, node_idx p,
                              int &numClasses, int services);
-  
-   int BuildHistoryMDD(mdd_handle p, fw_fddl_forest * forest, mdd_handle & r);
-   int InternalBuildHistoryMDD(fw_fddl_forest * forest, level k, node_idx p);
-
+   
    int BuildServiceGraphMDD(mdd_handle p, fddl_forest * forest, mdd_handle & r,
                      int &numArcs);
    int InternalBuildServiceGraphMDD(fddl_forest * forest, level k, node_idx p,
@@ -153,16 +135,7 @@ class fw_fddl_forest:public fddl_forest {
    int InternalGetServiceArcs(level k, node_idx p, int* src, int* dst,
       int* low, int* high, service*&output, int& numArcs);
   void PrintPort (mdd_handle h, level k);
-  int PrintPort (level k, node_idx p, int highByte, int depth, portset * p);
-
-  int IsolateClass(mdd_handle h, int classNum, mdd_handle &r);
-  node_idx InternalIsolateClass(level k, node_idx p, int classNum);
-  
-  int ExpandClass(fw_fddl_forest* forest, mdd_handle h, mdd_handle &r, level top, int serviceFlag);
-  node_idx InternalExpandClass(fw_fddl_forest* forest, level k, node_idx p, level top, int serviceFlag);
-
-  int And(mdd_handle a, mdd_handle b, mdd_handle& r);
-  node_idx InternalAnd(level k, node_idx a, node_idx b);
+  int PrintPort (level k, node_idx p, int highByte, int depth, portset * ps);
 };
 
 #endif

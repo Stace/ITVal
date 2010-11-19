@@ -32,8 +32,8 @@
 
 void BreakMASQPorts(char *str, nat_range * &NATRange, char prot, Firewall * FW){
    char *ch;
-   char word3[256];
-   char word4[256];
+   char word3[1024];
+   char word4[1024];
    int length;
    //printf("MASQUERADE AND REDIRECT ports have not been implemented yet.\n");
    NATRange = new nat_range;
@@ -41,7 +41,7 @@ void BreakMASQPorts(char *str, nat_range * &NATRange, char prot, Firewall * FW){
    NATRange->ports.port1 = 0;
    NATRange->ports.port2 = 65535;
    NATRange->ports.next = NULL;
-   for (int i = 0; i <= TOP_LEVEL; i++) {
+   for (int i = 0; i < 23; i++) {
       NATRange->low[i] = 0;
       NATRange->high[i] = FW->FWForest->GetMaxVal(i);
    }
@@ -84,10 +84,10 @@ void BreakMASQPorts(char *str, nat_range * &NATRange, char prot, Firewall * FW){
 void BreakNAT(char *str, nat_range * &NATRange, char prot, Firewall * FW, char* target)
 {
    char *ch;
-   char word1[256];
-   char word2[256];
-   char word3[256];
-   char word4[256];
+   char word1[1024];
+   char word2[1024];
+   char word3[1024];
+   char word4[1024];
    int length;
    int offset;
 
@@ -96,7 +96,7 @@ void BreakNAT(char *str, nat_range * &NATRange, char prot, Firewall * FW, char* 
    NATRange->ports.port1 = 0;
    NATRange->ports.port2 = 65535;
    NATRange->ports.next = NULL;
-   for (int i = 0; i <= TOP_LEVEL; i++) {
+   for (int i = 0; i < 23; i++) {
       NATRange->low[i] = 0;
       NATRange->high[i] = FW->FWForest->GetMaxVal(i);
    }
@@ -221,12 +221,12 @@ void BreakNAT(char *str, nat_range * &NATRange, char prot, Firewall * FW, char* 
 void BreakNMAP(char *str, nat_range * &NATRange, Firewall * FW)
 {
    char *ch;
-   char word1[256];
+   char word1[1024];
    int length;
 
    NATRange = new nat_range;
    NATRange->next = NULL;
-   for (int i = 0; i <= TOP_LEVEL; i++) {
+   for (int i = 0; i < 23; i++) {
       NATRange->low[i] = 0;
       NATRange->high[i] = FW->FWForest->GetMaxVal(i);
    }
@@ -293,7 +293,7 @@ processed_nat_rule* ConvertToDNAT(processed_nat_rule * p, Firewall * FW){
 	 newRange->ports.port1 = p->nat->ports.port1;
 	 newRange->ports.port2 = p->nat->ports.port2;
 	 newRange->ports.next = NULL;
-	 for (int i=0;i<=TOP_LEVEL;i++){
+	 for (int i=0;i<23;i++){
             newRange->low[i] = 0;
 	    newRange->high[i] = FW->FWForest->GetMaxVal(i);
 	 }
@@ -377,7 +377,7 @@ processed_nat_rule* ConvertToDNAT(processed_nat_rule * p, Firewall * FW){
 	 newRange->ports.port1 = p->nat->ports.port1;
 	 newRange->ports.port2 = p->nat->ports.port2;
 	 newRange->ports.next = NULL;
-	 for (int i=0;i<=TOP_LEVEL;i++){
+	 for (int i=0;i<23;i++){
             newRange->low[i] = 0;
 	    newRange->high[i] = FW->FWForest->GetMaxVal(i);
 	 }
@@ -468,7 +468,7 @@ processed_nat_rule* ConvertToSNAT(processed_nat_rule * p, Firewall * FW){
 	 newRange->ports.port1 = p->nat->ports.port1;
 	 newRange->ports.port2 = p->nat->ports.port2;
 	 newRange->ports.next = NULL;
-	 for (int i=0;i<=TOP_LEVEL;i++){
+	 for (int i=0;i<23;i++){
             newRange->low[i] = 0;
 	    newRange->high[i] = FW->FWForest->GetMaxVal(i);
 	 }
@@ -479,11 +479,11 @@ processed_nat_rule* ConvertToSNAT(processed_nat_rule * p, Firewall * FW){
             return NULL;
 	 }
          ip = FW->T->GetIP(name);
-	 newRange->low[TOP_LEVEL] = ip[0];
+	 newRange->low[22] = ip[0];
 	 newRange->low[21] = ip[1];
 	 newRange->low[20] = ip[2];
 	 newRange->low[19] = ip[3];
-	 newRange->high[TOP_LEVEL] = ip[0];
+	 newRange->high[22] = ip[0];
 	 newRange->high[21] = ip[1];
 	 newRange->high[20] = ip[2];
 	 newRange->high[19] = ip[3];
@@ -552,7 +552,7 @@ processed_nat_rule* ConvertToSNAT(processed_nat_rule * p, Firewall * FW){
 	 newRange->ports.port1 = p->nat->ports.port1;
 	 newRange->ports.port2 = p->nat->ports.port2;
 	 newRange->ports.next = NULL;
-	 for (int i=0;i<=TOP_LEVEL;i++){
+	 for (int i=0;i<23;i++){
             newRange->low[i] = 0;
 	    newRange->high[i] = FW->FWForest->GetMaxVal(i);
 	 }
@@ -563,11 +563,11 @@ processed_nat_rule* ConvertToSNAT(processed_nat_rule * p, Firewall * FW){
             return NULL;
 	 }
          ip = FW->T->GetIP(name);
-	 newRange->low[TOP_LEVEL] = ip[0];
+	 newRange->low[22] = ip[0];
 	 newRange->low[21] = ip[1];
 	 newRange->low[20] = ip[2];
 	 newRange->low[19] = ip[3];
-	 newRange->high[TOP_LEVEL] = ip[0];
+	 newRange->high[22] = ip[0];
 	 newRange->high[21] = ip[1];
 	 newRange->high[20] = ip[2];
 	 newRange->high[19] = ip[3];
@@ -600,8 +600,8 @@ processed_nat_rule* ConvertToSNAT(processed_nat_rule * p, Firewall * FW){
 void ProcessNATInfo(char *info, processed_nat_rule * p, Firewall * FW,
                     rule_parser * rp)
 {
-   char port[256];                       // String representation of the port
-   char which[256];                      // Which protocol the port is for
+   char port[1024];                       // String representation of the port
+   char which[1024];                      // Which protocol the port is for
 
    // (tcp, udp, or icmp)
    int port_val;                          // Integer representation of the port 
@@ -618,8 +618,8 @@ void ProcessNATInfo(char *info, processed_nat_rule * p, Firewall * FW,
 
    nat_range *NATRange;                   // NATted Address
 
-   char word1[256];                      // Key name
-   char word2[256];                      // Value 
+   char word1[1024];                      // Key name
+   char word2[1024];                      // Value 
 
    int flags[6];                          // Which TCP flags to match
 
@@ -644,19 +644,19 @@ void ProcessNATInfo(char *info, processed_nat_rule * p, Firewall * FW,
          info++;
       }
       // Read the first word (the key)
-      if (sscanf(info, "%256s", word1) != EOF) {
+      if (sscanf(info, "%1024s", word1) != EOF) {
          info += strlen(word1);
          // If it's tcp or udp, scan in a port.
-         if (!strncmp(word1, "tcp", 256) || !strncmp(word1, "udp", 256)) {
+         if (!strncmp(word1, "tcp", 1024) || !strncmp(word1, "udp", 1024)) {
             // Read the port number into word2
-            if (sscanf(info, "%256s", word2) != EOF) {
+            if (sscanf(info, "%1024s", word2) != EOF) {
                info += strlen(word2);
                // Convert the string into an integer
                rp->BreakPort(word2, which, port);
                // If it's a destination port, put it in the dports
                // list.  If it's a source port, put it in the sports
                // list.
-               if (!strncmp(which, "dpt", 256)) {
+               if (!strncmp(which, "dpt", 1024)) {
                   newPort = new port_range;
                   newPort->next = dports;
                   port_val = atoi(port);
@@ -664,7 +664,7 @@ void ProcessNATInfo(char *info, processed_nat_rule * p, Firewall * FW,
                   newPort->port2 = port_val % 256;
                   dports = newPort;
                }
-               else if (!strncmp(which, "spt", 256)) {
+               else if (!strncmp(which, "spt", 1024)) {
                   newPort = new port_range;
                   newPort->next = sports;
                   port_val = atoi(port);
@@ -676,8 +676,8 @@ void ProcessNATInfo(char *info, processed_nat_rule * p, Firewall * FW,
             // If the keyword is "state", then parse the state
             // information.
          }
-         else if (!strncmp(word1, "state", 256)) {
-            if (sscanf(info, "%256s", word2) != EOF) {
+         else if (!strncmp(word1, "state", 1024)) {
+            if (sscanf(info, "%1024s", word2) != EOF) {
                info += strlen(word2);
                rp->BreakState(word2, &state);
             }

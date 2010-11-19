@@ -29,11 +29,6 @@ Williamsburg, VA 23185
 #ifndef __PARSER_H
 #define __PARSER_H
 
-#define FLAG_NO_EXAMPLE 0
-#define FLAG_EXAMPLE 1
-#define FLAG_NO_HISTORY 0
-#define FLAG_HISTORY 1
-
 #include "structures.h"
 #include "fwmdd.h"
 
@@ -124,9 +119,9 @@ query *PerformQuery(int s, condition * c);
 assert *PerformAssertion(condition *left, condition *right, int assertion_operator, int example_flag, int history_flag);
 
 //Compute Host Equivalence Classes and print them.
-query *PrintClasses(int history);
-query *PrintServiceClasses(int history);
-query *PrintServiceGraph(int history);
+query *PrintClasses();
+query *PrintServiceClasses();
+query *PrintServiceGraph();
 group *GetClasses();
 service *GetServiceClasses();
 
@@ -143,7 +138,7 @@ group *DefineGroup(char *name, address * list);
 service *DefineService(char *name, port * list);
 
 //Create and initialize the MDD forest
-void InitializeStructures(Firewall * F, bool classOutputFlag);
+void InitializeStructures(Firewall * F);
 
 //Set the protocol of port "port" to "protocol"
 port *BuildPort(int protocol, port * port);

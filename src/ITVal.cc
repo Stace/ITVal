@@ -23,13 +23,10 @@
  * and Mary Williamsburg, VA 23185 
  */
 
-#define SYNTAX "Syntax: ITVal [options]\n\
-Options:\n\
--q <queryfile> :Specify the query file. <REQUIRED>\n\
--t <topology file> : Specify the topology file.\n\
--F or -f <rulefile> : Append a filter rule set file. <REQUIRED>\n\
--N or -n <natfile> : Append a NAT rule set file.\n\
--c enable output of problem classes.\n\n"
+#define SYNTAX "Syntax: ITVal [options]\n   Options:\n      -q <queryfile> :\
+Specify the query file. <REQUIRED>\n      -t <topology file> : Specify the \
+topology file.\n      -F or -f <rulefile> : Append a filter rule set file. \
+<REQUIRED>\n      -N or -n <natfile> : Append a NAT rule set file.\n\n"
 
 #include <stdio.h>
 #include "parser.h"
@@ -56,10 +53,9 @@ int chain::numChains = 0;
 int main(int argc, char **argv)
 {
    int i;
-   bool classOutputFlag;
    char queryName[256];
    Firewall **fws;                        /* Array of independent firewalls   */
-   int num_fws;	                          /* Number of firewalls in the array */
+   int num_fws = 0;                       /* Number of firewalls in the array */
    Topology *top = NULL;
    filename_node *fileList = NULL;
    char flag;
@@ -70,9 +66,7 @@ int main(int argc, char **argv)
 
    filename_node *fn;
 
-   classOutputFlag = false;
-
-   int ranges[TOP_LEVEL+1] = { 256,      /* Target Chain                 */
+   int ranges[23] = { 256,      /* Target Chain                 */
       1, 1, 1, 1, 1, 1,         /* Flags (FIN, SYN, RST, PSH, ACK, URG) */
       3,                        /* Connection State             */
       255, 255,                 /* Output and Input Interface   */
@@ -83,11 +77,10 @@ int main(int argc, char **argv)
       255, 255, 255, 255        /* Source Address               */
    };
 
-   int hranges[TOP_LEVEL+1+3] = { 
+   int hranges[25] = { 
       256,			/* Exists */
-      65535,      		/* Rule ID */
-      65535,      		/* Chain ID */
-      65535,			/* Firewall ID */
+      65536,      		/* Rule ID */
+      65536,      		/* Chain ID */
       1, 1, 1, 1, 1, 1,         /* Flags (FIN, SYN, RST, PSH, ACK, URG) */
       3,                        /* Connection State             */
       255, 255,                 /* Output and Input Interface   */
@@ -98,12 +91,10 @@ int main(int argc, char **argv)
       255, 255, 255, 255        /* Source Address               */
    };
 
-   FWForest = new fw_fddl_forest(TOP_LEVEL+1, ranges);
+   FWForest = new fw_fddl_forest(23, ranges);
    FWForest->ToggleSparsity(false);     /* @BUG@: Sparse nodes don't work. */
-   HistoryForest = new fw_fddl_forest(TOP_LEVEL+1+3, hranges);
+   HistoryForest = new fw_fddl_forest(25, hranges);
    HistoryForest->ToggleSparsity(false);/* @BUG@: Sparse nodes don't work. */
-
-   num_fws = 0;
 
    strncpy(queryName, "NOQUERY", 7);
 
@@ -126,10 +117,6 @@ int main(int argc, char **argv)
          default:
             printf(SYNTAX);
             return 1;
-	 case 'c':
-	    classOutputFlag = true;
-	    i = i-1; //No option, so back up one.
-	    break;
          case 'q':
             if (i + 1 >= argc) {
                printf("Error: Flag -q requires an argument!\n");
@@ -221,11 +208,11 @@ int main(int argc, char **argv)
       if (fileList->verbose_input == 1)
          fws[i] =
             new Firewall(fileList->filterName, fileList->natName, FWForest,
-                         top, 1, HistoryForest, i);
+                         top, 1, HistoryForest);
       else
          fws[i] =
             new Firewall(fileList->filterName, fileList->natName, FWForest,
-                         top, HistoryForest,i);
+                         top, HistoryForest);
       i = i + 1;
       del = fileList;
       fileList = fileList->next;
@@ -236,13 +223,18 @@ int main(int argc, char **argv)
    metaFirewall = MergeFWs(FWForest, fws, num_fws, HistoryForest);     //@Need Topology here?@
 
 
+   for (int i = 0; i < num_fws; i++) {
+      delete fws[i];
+   }
+   delete[]fws;
+
    if (!metaFirewall) {
       printf("No firewalls to merge!\nAborting.\n");
       return 2;
    }
 
    /* Connect the Forest to the Query Engine. */
-   InitializeStructures(metaFirewall, classOutputFlag);
+   InitializeStructures(metaFirewall);
 
    /* Parse and Analyze query file */
    ParseQueryFile(queryName);
@@ -250,11 +242,6 @@ int main(int argc, char **argv)
    DoCleanup();
 //   if (top != NULL)
 //      delete top;
-   for (int i = 0; i < num_fws; i++) {
-      delete fws[i];
-   }
-   delete[]fws;
-
    delete metaFirewall;
    delete FWForest;
    delete HistoryForest;

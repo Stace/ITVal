@@ -26,7 +26,9 @@
 #ifndef FDDL_PORTSET_H
 #   define FDDL_PORTSET_H 1
 
-#include "stdio.h"
+#include <iostream>
+using namespace std;
+
 class   portset {
 	char    ports[8192];
  public:
@@ -45,12 +47,12 @@ class   portset {
 
 	void    PrintPorts() {
 		if (numPorts == 65536) {
-			printf("* ");
+			cout << "* ";
 		}
 		else {
 			for (int i = 0; i < 65536; i++) {
 				if ((ports[i/8] % (i%8)) != 0)
-					printf("%d ", i);
+					cout << i << " ";
 			}
 		}
 	}

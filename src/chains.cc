@@ -31,11 +31,9 @@
 //#define DEBUG
 
 #include <unistd.h>
-#include <stdio.h>
+#include <iostream>
 
-#ifndef HAVE_GETLINE
-ssize_t getline(char **, size_t *, FILE *);
-#endif
+using namespace std;
 
 #include <errno.h>
 
@@ -47,17 +45,6 @@ ssize_t getline(char **, size_t *, FILE *);
 #include "chains.h"
 #include "debug.h"
 #include "firewall.h"
-
-rule_tuple* chain::FindRule(int rule_id){
-   rule_tuple* cur_tup;
-   cur_tup = tup;
-   while (cur_tup != NULL){
-      if (cur_tup->id == rule_id)
-         return cur_tup;
-      cur_tup = cur_tup->next;
-   }
-   return NULL;
-}
 
 // Read the name of a Chain from the rule file
 void Firewall::ReadChain(char *line, ssize_t length, chain * newChain)
@@ -81,7 +68,7 @@ void Firewall::ReadChain(char *line, ssize_t length, chain * newChain)
       else if (spam[0] == 'A')
          newChain->Default = 3; // ACCEPT
       else {
-         printf("Chain %s has invalid default policy %s\n", name, spam);
+         cout << "Chain " << name << "has invalid default policy " << spam << endl;
          exit(-1);
       }
    }
@@ -140,7 +127,7 @@ void Firewall::BuildFWRules(char *fname)
    lineNo++;
    oldLine = line;
    if (line == NULL || strstr(line, "Chain") < 0) {
-      printf("File <%s> is not a valid rule file.\n", fname);
+      cout << "File <" << fname << ">" << "is not a valid rule file." << endl;
       exit(-1);
    }
 
@@ -178,10 +165,10 @@ void Firewall::BuildFWRules(char *fname)
 
 #ifdef DEBUG
          if (newChain == NULL) {
-            printf("%d: Bad chain definition\n", lineNo);
+            cout << lineNo << ": Bad chain definition" << endl;
             exit(-1);
          }
-         printf("%d: Chain %s[%d]\n", lineNo, newChain->name,newChain->id);
+         cout << lineNo << ": Chain " << newChain->name << "[" << newChain->id << "]" << endl;
 #endif
 
          current_chain++;
@@ -190,7 +177,6 @@ void Firewall::BuildFWRules(char *fname)
 
          chain_array[current_chain] = newChain;
          cur->chain_id = chain_array[current_chain]->id;
-	 cur->fw_id = id;
 
          // Allocate the first rule
          // cur = new rule;
@@ -226,7 +212,6 @@ void Firewall::BuildFWRules(char *fname)
             // Allocate next rule
             cur = new rule;
 	    cur->chain_id = chain_array[current_chain]->id;
-	    cur->fw_id = id;
          }
          // Do priming read
          free(oldLine);
@@ -255,7 +240,7 @@ void Firewall::BuildFWRules(char *fname)
    while (i < num_chains) {     // For each chain
       newChain = chain_array[i];
 #ifdef DEBUG
-      printf("Chain: %s\n", newChain->name);
+      cout << "Chain: " << newChain->name << endl;
 #endif
       cur = newChain->rules;
 
@@ -276,9 +261,9 @@ void Firewall::BuildFWRules(char *fname)
          ProcessRule(cur, pcur, rp, T);
 
 #ifdef DEBUG
-         printf("=======\n");
+         cout << "=======" << endl;
          PrintProcessedRule(pcur);
-         printf("*******\n");
+         cout << "*******" << endl;
 #endif
          // Push onto head of the list
          pcur->next = phead;
@@ -361,7 +346,7 @@ void Firewall::BuildVerboseFWRules(char *fname)
    lineNo++;
    oldLine = line;
    if (line == NULL || strstr(line, "Chain") < 0) {
-      printf("File <%s> is not a valid rule file.\n", fname);
+      cout << "File <" << fname << "> is not a valid rule file." << endl;
       exit(-1);
    }
 
@@ -399,10 +384,10 @@ void Firewall::BuildVerboseFWRules(char *fname)
 
 #ifdef DEBUG
          if (newChain == NULL) {
-            printf("%d: Bad chain definition\n", lineNo);
+            cout << lineNo << ": Bad chain definition" << endl;
             exit(-1);
          }
-         printf("%d: Chain %s[%d](Default %d)\n", lineNo, newChain->name,newChain->id, newChain->Default);
+         cout << lineNo << ": Chain " << newChain->name << "[" << newChain->id << "]" << "(Default " << newChain->Default << ")" << endl;
 #endif
 
          current_chain++;
@@ -411,7 +396,6 @@ void Firewall::BuildVerboseFWRules(char *fname)
 
          chain_array[current_chain] = newChain;
          cur->chain_id = chain_array[current_chain]->id;
-	 cur->fw_id = id;
 
          // Consume the "header display" line
          free(oldLine);
@@ -447,7 +431,6 @@ void Firewall::BuildVerboseFWRules(char *fname)
             // Allocate next rule
             cur = new rule;
 	    cur->chain_id = chain_array[current_chain]->id;
-	    cur->fw_id = id;
          }
          // Do priming read
          free(oldLine);
@@ -476,7 +459,7 @@ void Firewall::BuildVerboseFWRules(char *fname)
    while (i < num_chains) {     // For each chain
       newChain = chain_array[i];
 #ifdef DEBUG
-      printf("Chain: %s\n", newChain->name);
+      cout << "Chain: " << newChain->name << endl;
 #endif
       cur = newChain->rules;
 
@@ -497,9 +480,9 @@ void Firewall::BuildVerboseFWRules(char *fname)
          ProcessRule(cur, pcur, rp, T);
 
 #ifdef DEBUG
-         printf("=======\n");
+         cout << "=======" << endl;
          PrintProcessedRule(pcur);
-         printf("*******\n");
+         cout << "*******" << endl;
 #endif
          // Push onto head of the list
          pcur->next = phead;
@@ -627,7 +610,6 @@ void Firewall::BuildNATRules(char *fname)
          // Allocate the first rule
          cur = new rule;
 	 cur->chain_id = nat_chains[current_nchain]->id;
-	 cur->fw_id = id;
 
          // Consume the "header display" line
          free(oldLine);
@@ -663,7 +645,6 @@ void Firewall::BuildNATRules(char *fname)
          // Allocate next rule
          cur = new rule;
 	 cur->chain_id = nat_chains[current_nchain]->id;
-	 cur->fw_id = id;
       }
       // Do priming read
       free(oldLine);
@@ -690,7 +671,7 @@ void Firewall::BuildNATRules(char *fname)
    while (i < num_nat_chains) { // For each chain
       curNATChain = nat_chains[i];
 #ifdef DEBUG
-      printf("NAT_Chain[%s]: %s\n", fname, curNATChain->name);
+      cout << "NAT_Chain[" << fname "]: " << curNATChain->name << endl;
 #endif
       cur = curNATChain->rules;
       natHead = NULL;           // Linked list of nat rules is initially
@@ -706,9 +687,9 @@ void Firewall::BuildNATRules(char *fname)
          ProcessNATRule(cur, pcur, this, rp);
 
 #ifdef DEBUG
-         printf("=======\n");
+         cout << "=======" << endl;
          PrintProcessedNATRule(pcur);
-         printf("*******\n");
+         cout << "*******" << endl;
 #endif
          // Push onto head of the list
          pcur->next = natHead;
@@ -813,16 +794,6 @@ int Firewall::FindChain(char *name)
          return i;
    }
    return -1;
-}
-
-chain* Firewall::FindChain(int fw_id, int cid){
-   if (merged_chains[fw_id] == NULL)
-      return NULL;
-   for (int i=0; i < 256; i++){
-      if (merged_chains[fw_id][i] && merged_chains[fw_id][i]->id == cid)
-         return merged_chains[fw_id][i];
-   }
-   return NULL;
 }
 
 int Firewall::FindNATChain(char *name)

@@ -33,8 +33,8 @@ void Firewall::DoNAT(nat_tuple * tup, mdd_handle inMDD, mdd_handle inHistMDD,
 
    mdd_handle interMDD;
    mdd_handle interHistMDD;
-//   int hlow[TOP_LEVEL+1+3];
-//   int hhigh[TOP_LEVEL+1+3];
+//   int hlow[25];
+//   int hhigh[25];
 
    if (tup == NULL)
       return;
@@ -73,11 +73,10 @@ void Firewall::DoNAT(nat_tuple * tup, mdd_handle inMDD, mdd_handle inHistMDD,
       // Insert it into the MDD.
       FWForest->MakeMDDFromTuple(tup->low, tup->high, interMDD);
 
-      for (int i=0;i<=TOP_LEVEL;i++){
-         tup->hlow[i+3]=tup->low[i];
-         tup->hhigh[i+3]=tup->high[i];
+      for (int i=0;i<=22;i++){
+         tup->hlow[i+2]=tup->low[i];
+         tup->hhigh[i+2]=tup->high[i];
       }
-      tup->hlow[3] = tup->hhigh[3] = tup->fw_id;
       tup->hlow[2] = tup->hhigh[2] = tup->chain_id;
       tup->hlow[1] = tup->hhigh[1] = tup->id;
 //      tup->hlow[0] = tup->hhigh[0] = 1;

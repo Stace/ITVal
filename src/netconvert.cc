@@ -45,29 +45,29 @@ void create_range(unsigned int *addy, unsigned int mask, address_range * ar,
 #endif
   ar->mask = mask;
   for (int i=0;i<4;i++){
-     if (mask <= 8*i){
+     if (8*i+1 > mask){
         ar->low[i] = 0;
         ar->high[i] = 255;
      }
-     else if (mask >= 8*(i+1)){
+     else if (8*(i+1) <= mask){
         ar->low[i] = addy[i];
         ar->high[i] = addy[i];
      }
      else{
-        int spoint;  //Number of bits to the right the mask ends.
-        spoint = mask-(i*8);
+        int spoint;
+        spoint = (i*8)-mask;
         ar->low[i] = addy[i];
         ar->high[i] = addy[i];
         int power;
-        power = 128;
+        power = 1;
         for (int j=0;j<8;j++){
-           if (j >= spoint && (ar->low[i] & power)){
+           if (j>=spoint && (ar->low[i] & power)){
               ar->low[i] -= power;
            }
-           if (j >= spoint && !(ar->high[i] & power)){
+           if (j>=spoint && !(ar->high[i] & power)){
               ar->high[i] += power;
            }
-           power /= 2;
+           power *= 2;
         }
      }
   }
@@ -156,6 +156,5 @@ void ConvertARange(char *range, address_range * ar)
       mval = 32;
    }
    // Now turn the mask/val pair into a (low, high) pair.
-//   printf("Mask is: %d\n", mval);
    create_range(vals, mval, ar, invert);
 }

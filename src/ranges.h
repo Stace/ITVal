@@ -31,7 +31,6 @@ Williamsburg, VA 23185
 #ifndef __RANGES_H__
 #   define __RANGES_H__
 
-#define TOP_LEVEL 22
 enum states { INVALID = 1, ESTABLISHED = 2, NEW = 4, RELATED = 8 };
 
 //A (low, high) pair describing an IP address range.
