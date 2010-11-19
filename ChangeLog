@@ -1,0 +1,148 @@
+ITVal-1.1: March 17, 2007 Robert Marmorstein
+	ASSERT statements now take a "HISTORY" flag that will list the rules
+	directly related to the failure or success of an assertion.
+
+ITVal-1.0: Feb 3, 2007 Robert Marmorstein
+	Added RPM packages and a gentoo ebuild.  Debian support has been
+	delayed until I can find someone willing to maintain a Debian 
+	package.
+
+ITVal-0.99: Feb 1, 2007 Robert Marmorstein
+	**** THIS RELEASE BREAKS COMPATABILITY WITH PREVIOUS VERSIONS ****
+	Pre-release of ITVal-1.0 for beta testing purposes.  ITVal now
+	features witnesses and counterexamples in addition to the new ASSERT
+	structure.  I have also fixed several bugs and
+	support for equivalence classes.
+
+	*IMPORTANT*  
+	The syntax of the ACCEPT and DROPPED conditions 
+	has changed!  Instead of doing:
+
+	QUERY SADDY INPUT FROM 192.168.1.* AND ACCEPTED;
+
+	The syntax is now:
+
+	QUERY SADDY FROM 192.168.1.* AND ACCEPTED INPUT;
+
+	This allows you to do things like:
+
+	QUERY SADDY FROM 192.168.1.* AND ACCEPTED INPUT OR ACCEPTED
+	FORWARD;
+
+ITVal-0.8: June 17, 2006 Robert Marmorstein
+	Began preliminary support for guided repair.  Adding history options
+	to the MDD library.  Redesigning the GUI in QT/KDE.  Fixed several
+	memory leaks in Topology handling.
+
+	Added "ACCEPTED" and "DROPPED" primitive conditions that specify the
+	set of accepted and dropped packets respectively.  Queries no longer
+	automatically intersect the query condition with "ACCEPTED".  This
+	allows the user to generate more complex and interesting queries
+	such as:
+	QUERY FROM 192.168.1.* AND ((FOR TCP 25 AND ACCEPTED) OR (FOR 22 AND
+	      DROPPED));
+	
+	Added "ASSERT" statements. ASSERT allows the user to check whether 
+	two conditions are equivalent or if one is a subset of the other.  
+	The syntax of ASSERT is: 
+	
+	ASSERT <condition> <operator> <condition>;
+
+	where <operator> is either "IS" or "SUBSET OF".
+	
+
+ITVal-0.7: April 26, 2006 Robert Marmorstein
+        ITVal now supports ranged addresses in queries and group/service
+        definitions.   For instance, you can use the query: QUERY FROM
+        192.168.1.[10-20] to specify a group of adjacently addresses hosts;
+        Support for INFACE and OUTFACE queries has also been improved and more
+	work on the equivalence classes and GUI has been done.  They should 
+	still be considered beta features, though.
+
+ITVal-0.6-r1: March 7, 2006 Robert Marmorstein
+	ITVal now ignores "PKTTYPE = <blah>" style conditions in the options
+	section of the rule table.  Also fixed a bug that caused segmentation
+	faults when no topology file was given.  ITVal now "creates"
+	interfaces on the fly as it detects them in the rule file and the
+	query file.  It is always better to specify them in the topology file,
+	though, so that ITVal knows what IP address to use for MASQUERADING
+	and REDIRECT.
+
+ITVal-0.6: March 6, 2006 Robert Marmorstein
+	Birthday "release".  Fixed a bug in handling of interfaces not
+	explicitly mentioned in the topology file.  Before, if ITVal came
+	across an unmentioned interface, it silently renamed that interface to
+	'*'.  Now, it adds the interface to the topology list and gives it a
+	bogus address, which I think is better default behavior.  Also added
+	rudimentary support for handling topology files with multiple
+	firewalls.  However, the new system just takes the topology file of
+	the 'last' filter rather than trying to merge and rename them.
+
+	Also, added a preliminary man page for ITVal.
+   
+ITVal-0.5: January 11, 2006 Robert Marmorstein
+	Implemented a new "CLASSES" query which decomposes the set of all IP
+	addresses into groups based on how the firewall treats all packets
+	originating from or destined for them.  Two hosts in an equivalence
+	class are always treated identically by the firewall with respect to
+	filtering.  This is useful for visualizing the firewall configuration
+	and potentially for future development of the tool.
+	
+ITVal-0.4-r3: December 13, 2005 Robert Marmorstein
+	 Fixed some memory access bugs that caused ITVal to crash when
+	 the parser freed names already freed by the MDD query constrution
+	 code.  Also changed the output of the "Ports" subject to be more
+	 readable.  Fixed other minor problems.  ITVal now ignores
+	 "MASQUERADE" and "REDIRECT" targets.  It used to NAT them to
+	 127.0.0.1, which is not realistic.  (It had no topology file to work 
+	 with at that point).  Now that we have the topology file, implementing 
+	 realistic MASQ is on the TODO list and ITVal temporarily 
+	 ignores these targets.
+	 
+ITVal-0.4-r2: December 13, 2005 Robert Marmorstein
+    Fixed a bug in src/chains.cc and src/iface.cc that caused ITVal to
+    crash when encountering a "strange" target like TCPMSS.
+    
+ITVal-0.4-r1: December 13, 2005 Robert Marmorstein
+    Fixed a bug in Makefile.am that broke "make dist" so that .h files
+    were not distributed with the package.
+
+ITVal-0.4: November 9, 2005 Robert Marmorstein 
+   Queries may now use the "INFACE" and "OUTFACE" operators to specify
+   a network interface for incoming or outgoing connections.  These
+   queries only make sense when using the verbose firewall input.
+
+ITVal-0.4: November 8, 2005 Robert Marmorstein 
+    Introduced several changes to the command line.  The -f command
+    loads a "normal" filter file.  The -F command loads a verbose filter
+    file.  Similarly, -n loads a normal NAT file, while -N loads a
+    verbose NAT file.  I believe it is a bad idea to mix and match file
+    types for a single firewall.  Firewalls specified with the -f and -n
+    flags assume that every rule matches ALL interfaces.  To use -F and
+    -N, a topology file MUST be specified.
+
+ITVal-0.4: November 2, 2004 Robert Marmorstein 
+    Changed the format of the command line options to allow reordering
+    of the flags.   Multiple NAT files are now associated with the most
+    recent filter file.  Topology files can be specified with the -t
+    flag.
+
+ITVal-0.4: November 1, 2005 Robert Marmorstein 
+    Added support for topology files.  Each line of the topology file
+    consists of a space seperated list of the form: 
+    <interface> <ip address>
+
+ITVal-0.4: November 1, 2005 Robert Marmorstein
+    Migrated ITVal make system to use the GNU autoconf tools.
+
+ITVal-0.3: August 5, 2005 Robert Marmorstein
+    Primarily a bugfix release.  Some improvements to the printing
+    system and some preparation for interface support.
+
+ITVal-0.2: April 30, 2005 Robert Marmorstein
+    Introduced several bugfixes, added support for NAT and for
+    analysis of multiple serially connected firewalls.
+
+ITVal-0.1: October 15, 2004 Robert Marmorstein
+    Initial release of ITVal.  Support for simple queries on a single
+    firewall.

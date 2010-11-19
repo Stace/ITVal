@@ -1,0 +1,19 @@
+                * AUTHORS *
+
+ITVal was written and developed by Robert Marmorstein for his
+dissertation research on systems security.  He was helped by his
+advisor, Dr. Phil Kearns.
+
+Marmorstein, Robert (Atomopawn) <rmmarm@sdf.lonestar.org>
+    * Main ITVal Engine
+    * FDDL Decision Diagram Library
+    * SNAT and DNAT support
+    * Composition of Multiple Firewalls
+    * Assertions
+    * Witnesses and CounterExamples
+
+Kearns, Phil (College of William and Mary)
+    * Research Advisor
+
+Thanks to Aleksandr Shubnik(alshu@tut.by, http://www.belarus.by) for extensive
+testing and bug reporting, and help with the RPM distribution.

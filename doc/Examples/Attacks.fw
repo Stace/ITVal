@@ -1,0 +1,32 @@
+#This query file was obtained using a list of vulnerable ports from
+#http://www.jlathamsite.com/dslr/suspectports.htm
+#and lists possibly insecure services that may be running on your
+#machine.  If you know you need that service, ignore the results.
+#If you aren't running that service, you should secure those ports.
+
+#ICMP Click attack
+QUERY SADDY IN NEW AND ON ICMP 0 AND FOR ICMP 0 AND ACCEPTED FORWARD;
+
+#Bonk attack
+QUERY SADDY IN NEW AND FOR BOTH 1 AND ACCEPTED FORWARD;
+
+#SynDrop attack
+QUERY SADDY IN NEW AND FOR BOTH 3 AND ACCEPTED FORWARD;
+
+#ICMP Routing Redirect Bomb
+QUERY SADDY IN NEW AND FOR ICMP 5 AND ACCEPTED FORWARD;
+
+#Fraggle attack
+QUERY SADDY IN NEW AND FOR UDP 7 AND ACCEPTED FORWARD;
+
+#Ping Attack
+#If you want to allow "pings" on your network, you need this enabled.
+QUERY SADDY IN NEW AND FOR ICMP 8 AND ACCEPTED FORWARD;
+
+#Ajan Trojan
+#Antigen Trojan
+#This port also supports normal SMTP service.
+QUERY SADDY IN NEW AND FOR BOTH 25 AND ACCEPTED FORWARD;
+
+#Port 0 Fingerprinting
+QUERY SADDY IN NEW AND ON TCP 0 OR ON UDP 0 AND ACCEPTED FORWARD OR ACCEPTED INPUT;

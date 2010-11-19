@@ -1,0 +1,31 @@
+#This query file was obtained using a list of vulnerable ports from
+#http://www.jlathamsite.com/dslr/suspectports.htm
+
+#It lists possibly insecure services that may be running on your
+#machine.  If you know you need that service, ignore the results.
+#If you aren't running that service, you should secure those ports.
+
+#ICMP Click attack
+ASSERT EXAMPLE HISTORY IN NEW AND ON ICMP 0 AND FOR ICMP 0 SUBSET OF ACCEPTED FORWARD;
+
+#Bonk attack
+ASSERT IN NEW AND FOR BOTH 1 SUBSET OF ACCEPTED FORWARD;
+
+#SynDrop attack
+ASSERT IN NEW AND FOR BOTH 3 SUBSET OF ACCEPTED FORWARD;
+
+#ICMP Routing Redirect Bomb
+ASSERT IN NEW AND FOR ICMP 5 SUBSET OF ACCEPTED FORWARD;
+
+#Fraggle attack
+ASSERT IN NEW AND FOR UDP 7 SUBSET OF ACCEPTED FORWARD;
+
+#Ping Attack
+ASSERT IN NEW AND FOR ICMP 8 SUBSET OF ACCEPTED FORWARD;
+
+#Ajan Trojan
+#Antigen Trojan
+#This port also supports normal SMTP service.
+ASSERT EXAMPLE HISTORY IN NEW AND FOR UDP 25 SUBSET OF ACCEPTED FORWARD;
+
+ASSERT EXAMPLE HISTORY IN NEW AND FOR TCP 65535 SUBSET OF ACCEPTED FORWARD;

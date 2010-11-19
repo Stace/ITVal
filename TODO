@@ -1,0 +1,29 @@
+1.  Test new History Tracking.
+
+2.  Implement Guided Repair Suggestions.
+
+3.  Come up with some good test cases for testing the various features of ITVal:
+	A.  Simple out-of-order rule queries
+	B.  Simple typo queries
+	C.  Equivalence Classes
+	D.  NAT errors
+	E.  Counterexamples
+	F.  History
+
+4.  Update Man pages
+
+Also:
+
+Except lists (make output cleaner).
+Test MASQUERADE and REDIRECT.
+
+Figure out whether NAT source address ranges can be inverted.
+Add support for IPSET stuff.
+Add support for "multiport dports" matches.
+Add support for "PKTTYPE = X" matches.
+Limit rules?
+TCPMSS rules.
+When encountering a pkt_type match, mask correct IP addresses?
+
+
+More general Topology handling (how to handle merged topologies?)
