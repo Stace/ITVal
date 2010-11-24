@@ -1,50 +1,29 @@
-Thank you for downloading version 1.0 of ITVal, an iptables configuration
+Thank you for downloading version 1.2 of ITVal, an iptables configuration
 verification and analysis tool.  
 
-Version 1.0 features RPM and DPKG packages of the tool, as well as several new
-features and a few minor bug fixes in calculation of equivalence classes and
-parsing.
+Version 1.2 features a new build system, transitioning for a configure system
+to CMake.
 
-IMPORTANT NOTE: Version 1.0 breaks compatibility with pre-release versions 0.7
+IMPORTANT NOTE: Version 1.2 breaks compatibility with pre-release versions 0.7
 and lower of the tool.  Query files created for versions 0.7 and lower may not
 work with this version or may generate unexpected results.  See below for more
 details.
 
-What's new in 1.0?
+What's new in 1.2?
 ------------------
-*Witnesses and Counter-examples (for Assertions)
+Version 1.2 introudces a new build system using CMake to increase the speed
+of compilation and to make installation easier. 
 
-If you insert the keyword "EXAMPLE" at the beginning of your assertion, ITVal
-will generate a packet illustating why the assertion failed or, if the
-assertion holds, a packet that honors the assertion.
+Version 1.2 also seperated the FDDL library from ITVal and made it operate
+independently, and now must be downloaded separately. The FDDL library also
+utilizes CMake for installation.
+The FDDL library can be found at:
 
-For example, you can use:
+	https://github.com/atomopawn/FDDL
 
-ASSERT EXAMPLE FROM 192.168.2.* AND NOT INFACE eth1 SUBSET OF DROPPED FORWARD;
 
-To test whether a packet from 192.168.2.0/24 can show up on interface
-eth1 without being dropped.  If the assertion fails, ITVal will show you
-a packet from 192.168.2.0/24 that can arrive on eth1 without being
-dropped by the firewall.
 
-*Changes to queries and assertions:
-
-The semantics of a the ACCEPT and DROPPED keywords have changed so that
-queries no longer take an "input_chain" argument.  Instead, this
-argument should be passed to the "ACCEPTED" or "DROPPED" keyword.  
-
-This change BREAKS COMPATABILITY with old query files.  To convert old
-files to the new syntax, replace the "input_chain" parameter from each
-query with an "AND ACCEPTED <input_chain>" at the end of the query.  For
-instance:
-
-QUERY SADDY INPUT FROM 192.168.2.* AND IN NEW;
-
-would become:
-
-QUERY SADDY (FROM 192.168.2.* AND IN NEW) AND ACCEPTED INPUT;
-
-What is not provided in release 1.0?
+What is not provided in release 1.2?
 ------------------------------------
 1.  Support for non-iptables filters.
 

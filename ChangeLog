@@ -1,3 +1,6 @@
+ITVal-1.2: November 22, 2010 Calie Giangi and Zachary Stace
+	Removed configure system, added CMake build system.
+
 ITVal-1.1: March 17, 2007 Robert Marmorstein
 	ASSERT statements now take a "HISTORY" flag that will list the rules
 	directly related to the failure or success of an assertion.

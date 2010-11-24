@@ -15,5 +15,9 @@ Marmorstein, Robert (Atomopawn) <rmmarm@sdf.lonestar.org>
 Kearns, Phil (College of William and Mary)
     * Research Advisor
 
+Calie Giangi and Zachary Stace 
+	* Changed configure build system to Cmake build system
+
 Thanks to Aleksandr Shubnik(alshu@tut.by, http://www.belarus.by) for extensive
 testing and bug reporting, and help with the RPM distribution.
+
